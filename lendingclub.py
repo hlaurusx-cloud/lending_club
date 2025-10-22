@@ -1,33 +1,32 @@
-import pandas as pd
 import streamlit as st
 import numpy as np
+import pandas as pd
 
-# ---------- 页面设置 ----------
-st.set_page_config(page_title="Finance Credit Dashboard", page_icon="📊", layout="wide")
+# ---------- 页面配置 ----------
+st.set_page_config(page_title="Neon Credit Dashboard", page_icon="💠", layout="wide")
 
-# ---------- CSS 注入（Finance 风格） ----------
+# ---------- CSS 注入（暗黑科技 + 霓虹） ----------
 st.markdown(
     """
     <style>
-    /* 背景 */
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
     .main {
-        background: linear-gradient(135deg, #1e2a3a, #2c3e50);
-        color: #ecf0f1;
-        font-family: 'Segoe UI', sans-serif;
+        background: #0d0d0d;
+        color: #e0e0e0;
+        font-family: 'Orbitron', sans-serif;
     }
-    /* 卡片 */
-    .card {
-        background-color: #283747;
-        padding: 1rem;
-        border-radius: 12px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    .neon-card {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid #00ffea;
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: 0 0 20px #00ffea;
         margin-bottom: 1rem;
     }
-    /* 指标文字 */
-    .metric {
-        font-size: 2rem;
-        font-weight: bold;
-        color: #1abc9c;
+    .neon-text {
+        font-size: 2.5rem;
+        color: #00ffea;
+        text-shadow: 0 0 10px #00ffea;
     }
     </style>
     """,
@@ -35,47 +34,37 @@ st.markdown(
 )
 
 # ---------- 顶部标题 ----------
-st.title("📊 Finance Credit Dashboard")
+st.title("💠 Neon Credit Dashboard")
 st.markdown("---")
 
-# ---------- 侧边栏（导航 + 控制） ----------
-st.sidebar.header("Control Panel")
-user_name = st.sidebar.text_input("User Name", "James")
+# ---------- 侧边栏 ----------
+st.sidebar.header("🎛️ Control")
+user_name = st.sidebar.text_input("User Name", "CyberUser")
 score = st.sidebar.slider("Credit Score", 300, 850, 750)
-theme_color = st.sidebar.color_picker("Accent Color", "#1abc9c")
+accent = st.sidebar.color_picker("Neon Color", "#00ffea")
 
-# ---------- 顶部 KPI 卡片 ----------
+# ---------- 霓虹 KPI ----------
 col1, col2, col3, col4 = st.columns(4)
 with col1:
-    st.markdown(f'<div class="card"><span class="metric">{score}</span><br>Credit Score</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="neon-card"><span class="neon-text">{score}</span><br>Score</div>', unsafe_allow_html=True)
 with col2:
-    st.markdown(f'<div class="card"><span class="metric">{"Excellent" if score >= 800 else "Good" if score >= 700 else "Fair"}</span><br>Rating</div>', unsafe_allow_html=True)
+    rating = "EXCELLENT" if score >= 800 else "GOOD" if score >= 700 else "FAIR"
+    st.markdown(f'<div class="neon-card"><span style="font-size:2rem;color:{accent};">{rating}</span><br>Rating</div>', unsafe_allow_html=True)
 with col3:
-    st.markdown(f'<div class="card"><span class="metric">{np.random.randint(1, 10)}</span><br>Inquiries</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="neon-card"><span style="font-size:2rem;color:{accent};">{np.random.randint(1,10)}</span><br>Inquiries</div>', unsafe_allow_html=True)
 with col4:
-    st.markdown(f'<div class="card"><span class="metric">{np.random.randint(1, 50)}</span><br>Delinq</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="neon-card"><span style="font-size:2rem;color:{accent};">{np.random.randint(1,50)}</span><br>Delinq</div>', unsafe_allow_html=True)
 
-# ---------- 图表区 ----------
-left, right = st.columns([2, 1])
+# ---------- 霓虹折线 ----------
+st.subheader("📈 Score Trend")
+months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"]
+values = [score + np.random.randint(-30, 30) for _ in months]
+chart_data = pd.DataFrame({"Month": months, "Score": values})
+st.line_chart(chart_data.set_index("Month"))
 
-with left:
-    st.subheader("📈 Score Trend (Fake)")
-    months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"]
-    values = [score + np.random.randint(-30, 30) for _ in months]
-    st.line_chart(pd.DataFrame({"Month": months, "Score": values}).set_index("Month"))
-
-with right:
-    st.subheader("📧 Recent Alerts")
-    alerts = [
-        "Hooray! Your score increased by 12 pts.",
-        "Payment due in 3 days.",
-        "New inquiry detected.",
-    ]
-    for a in alerts:
-        st.info(a)
-
-# ---------- 底部按钮 ----------
+# ---------- 霓虹按钮 ----------
 st.markdown("---")
-if st.button("🎲 Simulate New Month"):
+if st.button("🎲 Generate New Score"):
     st.balloons()
-    st.success(f"New score: {np.random.randint(650, 850)}")
+    new_score = np.random.randint(650, 850)
+    st.success(f"✨ New Score: **{new_score}**")
